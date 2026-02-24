@@ -137,6 +137,7 @@ class LlamaConfig(PretrainedConfig):
         rope_scaling=None,
         attention_bias=False,
         attention_dropout=0.0,
+        openvla_oft_attention_mask_mode="pad_only_bidir",
         **kwargs,
     ):
         self.vocab_size = vocab_size
@@ -161,6 +162,10 @@ class LlamaConfig(PretrainedConfig):
         self._rope_scaling_validation()
         self.attention_bias = attention_bias
         self.attention_dropout = attention_dropout
+        # OpenVLA-OFT extension: controls SDPA attention mask handling.
+        # - "pad_only_bidir": keep legacy row-tiling behavior from the OFT fork
+        # - "block_m1"/"custom_4d": pass query-dependent 4D masks through unchanged
+        self.openvla_oft_attention_mask_mode = openvla_oft_attention_mask_mode
 
         super().__init__(
             pad_token_id=pad_token_id,

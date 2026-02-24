@@ -716,11 +716,17 @@ class LlamaSdpaAttention(LlamaAttention):
         #
         # Trick: To get this mask, we just take the last row of the old `causal_mask` and duplicate it all the way through to get the new mask. You can see that this trick
         # works by looking at the matrices above.
+        #
+        # NOTE (MemVLA M1):
+        # Keep this legacy behavior for `pad_only_bidir`, but allow custom query-dependent
+        # 4D masks (e.g., `block_m1`) to pass through unchanged.
         if causal_mask is not None:
-            D = causal_mask.shape[-1]
-            last_row = causal_mask[:, :, -1, :].clone()
-            new_mask = last_row.unsqueeze(2).expand(-1, -1, D, -1)
-            causal_mask = new_mask
+            attention_mask_mode = getattr(self.config, "openvla_oft_attention_mask_mode", "pad_only_bidir")
+            if attention_mask_mode == "pad_only_bidir":
+                D = causal_mask.shape[-1]
+                last_row = causal_mask[:, :, -1, :].clone()
+                new_mask = last_row.unsqueeze(2).expand(-1, -1, D, -1)
+                causal_mask = new_mask
 
         attn_output = torch.nn.functional.scaled_dot_product_attention(
             query_states,
