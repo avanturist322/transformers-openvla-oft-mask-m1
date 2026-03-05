@@ -164,7 +164,7 @@ class LlamaConfig(PretrainedConfig):
         self.attention_dropout = attention_dropout
         # OpenVLA-OFT extension: controls SDPA attention mask handling.
         # - "pad_only_bidir": keep legacy row-tiling behavior from the OFT fork
-        # - "block_m1"/"custom_4d": pass query-dependent 4D masks through unchanged
+        # - "block_m1"/"block_m2"/"custom_4d": pass query-dependent 4D masks through unchanged
         self.openvla_oft_attention_mask_mode = openvla_oft_attention_mask_mode
 
         super().__init__(

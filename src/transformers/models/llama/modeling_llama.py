@@ -719,7 +719,7 @@ class LlamaSdpaAttention(LlamaAttention):
         #
         # NOTE (MemVLA M1):
         # Keep this legacy behavior for `pad_only_bidir`, but allow custom query-dependent
-        # 4D masks (e.g., `block_m1`) to pass through unchanged.
+        # 4D masks (e.g., `block_m1` / `block_m2`) to pass through unchanged.
         if causal_mask is not None:
             attention_mask_mode = getattr(self.config, "openvla_oft_attention_mask_mode", "pad_only_bidir")
             if attention_mask_mode == "pad_only_bidir":
